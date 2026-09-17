@@ -1,0 +1,59 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ReciclaCampus</title>
+
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+</head>
+
+<body>
+
+    <header>
+        <h1>♻️ ReciclaCampus</h1>
+        <a href="{% url 'login' %}">
+    <button>Entrar</button>
+</a>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Recicle e faça a diferença.</h2>
+
+            <p>
+                Transforme seus resíduos em pontos e ajude a construir
+                um campus mais sustentável.
+            </p>
+
+            <button>Começar a reciclar</button>
+        </section>
+
+        <section class="cards">
+
+            <div class="card">
+                📍
+                <h3>Pontos de Coleta</h3>
+                <p>Encontre onde reciclar no campus.</p>
+            </div>
+
+            <div class="card">
+                🏆
+                <h3>Ranking</h3>
+                <p>Veja os alunos que mais reciclaram.</p>
+            </div>
+
+            <div class="card">
+                🎁
+                <h3>Campanhas</h3>
+                <p>Participe e ganhe pontos extras.</p>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>

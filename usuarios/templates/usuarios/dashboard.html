@@ -1,0 +1,140 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - ReciclaCampus</title>
+
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+</head>
+
+<body>
+
+    <header>
+        <h1>♻️ ReciclaCampus</h1>
+
+        <a href="#">
+            <button>Sair</button>
+        </a>
+    </header>
+
+
+    <main class="dashboard">
+
+        <section class="welcome">
+
+            <h2>Olá, {{ user.first_name }}! 👋</h2>
+
+            <p>
+                Acompanhe sua contribuição para um campus mais sustentável.
+            </p>
+
+        </section>
+
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <span>⭐</span>
+
+                <h3>0</h3>
+
+                <p>Pontos</p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>🏆</span>
+
+                <h3>--</h3>
+
+                <p>Posição no ranking</p>
+
+            </div>
+
+        </section>
+
+
+        <section class="dashboard-options">
+
+            <div class="dashboard-card">
+
+                <span>📍</span>
+
+                <h3>Pontos de Coleta</h3>
+
+                <p>
+                    Encontre os pontos de coleta disponíveis no campus.
+                </p>
+
+                <button>
+                    Ver pontos
+                </button>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <span>♻️</span>
+
+                <h3>Registrar Reciclagem</h3>
+
+                <p>
+                    Registre uma nova reciclagem e ganhe pontos.
+                </p>
+
+                <button>
+                    Registrar
+                </button>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <span>🏆</span>
+
+                <h3>Ranking</h3>
+
+                <p>
+                    Veja os alunos que mais contribuem para a reciclagem.
+                </p>
+
+                <button>
+                    Ver ranking
+                </button>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <span>🎁</span>
+
+                <h3>Campanhas</h3>
+
+                <p>
+                    Confira as campanhas e os bônus disponíveis.
+                </p>
+
+                <button>
+                    Ver campanhas
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Entrar - ReciclaCampus</title>
+
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-box">
+
+            <h1>♻️ ReciclaCampus</h1>
+
+            <h2>Entrar</h2>
+
+            <p class="login-text">
+                Acesse sua conta e acompanhe seus pontos.
+            </p>
+
+            {% if erro %}
+                <p style="color: red;">
+                    {{ erro }}
+                </p>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="matricula">Matrícula</label>
+
+                    <input
+                        type="text"
+                        id="matricula"
+                        name="matricula"
+                        placeholder="Digite sua matrícula"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                    >
+                </div>
+
+                <button type="submit">
+                    Entrar
+                </button>
+
+            </form>
+
+            <p class="cadastro-text">
+                Ainda não possui uma conta?
+                <a href="#">Cadastre-se</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
