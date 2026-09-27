@@ -1,0 +1,75 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Descarte - ReciclaCampus</title>
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+</head>
+
+<body>
+
+<header>
+    <h1>♻️ ReciclaCampus</h1>
+    <a href="{% url 'dashboard' %}">
+        <button>Voltar</button>
+    </a>
+</header>
+
+<main class="dashboard">
+
+    <section class="welcome">
+        <h2>📍 {{ ponto.nome }}</h2>
+        <p>{{ ponto.localizacao }}</p>
+    </section>
+
+    <form method="POST" action="{% url 'coleta:registrar' ponto.codigo %}">
+        {% csrf_token %}
+
+        <section class="stats">
+            <div class="stat-card" style="grid-column: span 2;">
+                <h3>Qual material você está descartando?</h3>
+            </div>
+        </section>
+
+        <section class="dashboard-options">
+            {% for residuo in residuos %}
+                <label class="dashboard-card" style="cursor: pointer;">
+                    <input type="radio" name="residuo" value="{{ residuo.id }}" required>
+                    <span>{{ residuo.icone|default:"♻️" }}</span>
+                    <h3>{{ residuo.nome }}</h3>
+                    <p>+{{ residuo.pontos }} pts por unidade</p>
+                </label>
+            {% empty %}
+                <p>Nenhum resíduo cadastrado ainda.</p>
+            {% endfor %}
+        </section>
+
+        <section class="stats" style="margin-top: 30px;">
+            <div class="stat-card">
+                <label for="quantidade"><strong>Quantidade</strong></label>
+                <input
+                    type="number"
+                    id="quantidade"
+                    name="quantidade"
+                    value="1"
+                    min="1"
+                    style="width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;"
+                >
+            </div>
+        </section>
+
+        <button type="submit" style="width: 100%; margin-top: 20px;">
+            ✓ Confirmar Descarte
+        </button>
+
+    </form>
+
+</main>
+
+</body>
+
+</html>

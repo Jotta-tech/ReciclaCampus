@@ -131,4 +131,9 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'usuarios.backends.MatriculaBackend',
+    
 ]
+# Autenticação: pra onde redirecionar
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'home'
