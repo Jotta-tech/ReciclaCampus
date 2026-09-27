@@ -6,134 +6,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dashboard - ReciclaCampus</title>
-
+    <title>Início - ReciclaCampus</title>
     <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="app-body">
 
-    <header>
-        <h1>♻️ ReciclaCampus</h1>
+<header class="app-header">
+    <div class="app-header-brand">
+        <span class="brand-icon">♻️</span>
+        <span class="brand-name">ReciclaCampus</span>
+    </div>
 
-        <a href="#">
-            <button>Sair</button>
-        </a>
-    </header>
+    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-ghost">Sair</button>
+    </form>
+</header>
 
+<main class="app-main">
 
-    <main class="dashboard">
+    {# ---------- MENSAGENS ---------- #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-        <section class="welcome">
+    {# ---------- SAUDAÇÃO ---------- #}
+    <section class="greeting">
+        <h1>Olá, {{ user.first_name|default:user.username }}! 👋</h1>
+        <p>Vamos continuar fazendo a diferença no campus?</p>
+    </section>
 
-            <h2>Olá, {{ user.first_name }}! 👋</h2>
+    {# ---------- CARD DE PONTOS ---------- #}
+    <section class="points-card">
+        <div class="points-card-header">
+            <span class="points-icon">⭐</span>
+            <span class="points-label">Seus pontos</span>
+        </div>
+        <div class="points-value">{{ total_pontos }}</div>
+    </section>
 
-            <p>
-                Acompanhe sua contribuição para um campus mais sustentável.
-            </p>
+    {# ---------- BOTÃO ESCANEAR QR ---------- #}
+    <a href="#" class="scan-button" onclick="alert('Em breve: leitura de QR Code pela câmera. Por enquanto, acesse pelo link do ponto.'); return false;">
+        <span class="scan-icon">📷</span>
+        <span class="scan-text">
+            <strong>Escanear QR Code</strong>
+            <small>Descarte e ganhe pontos</small>
+        </span>
+    </a>
 
+    {# ---------- CARD DE NÍVEL ---------- #}
+    <section class="level-card">
+        <div class="level-header">
+            <span class="level-icon">🛡️</span>
+            <div>
+                <strong>Nível {{ nivel.nivel }} — {{ nivel.nome }}</strong>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ nivel.progresso }}%;"></div>
+        </div>
+
+        <div class="level-info">
+            {% if nivel.proximo_nome %}
+                <span>{{ total_pontos }} / {{ nivel.max_pontos }} pontos</span>
+                <span>Faltam {{ nivel.faltam }} para {{ nivel.proximo_nome }}</span>
+            {% else %}
+                <span>Você está no nível máximo! 🏆</span>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ---------- ESTATÍSTICAS RÁPIDAS ---------- #}
+    <section class="mini-stats">
+        <div class="mini-stat">
+            <span>♻️</span>
+            <strong>{{ total_itens }}</strong>
+            <small>Itens reciclados</small>
+        </div>
+        <div class="mini-stat">
+            <span>🏆</span>
+            <strong>{% if posicao %}{{ posicao }}º{% else %}--{% endif %}</strong>
+            <small>Posição no ranking</small>
+        </div>
+        <div class="mini-stat">
+            <span>📋</span>
+            <strong>{{ total_registros }}</strong>
+            <small>Registros feitos</small>
+        </div>
+    </section>
+
+    {# ---------- ACESSO RÁPIDO ---------- #}
+    <section class="section-block">
+        <h2 class="section-title">Acesso rápido</h2>
+
+        <div class="quick-grid">
+            <div class="quick-card">
+                <span class="quick-icon">🏆</span>
+                <strong>Ranking</strong>
+                <small>Veja sua posição</small>
+            </div>
+
+            <div class="quick-card">
+                <span class="quick-icon">📍</span>
+                <strong>Mapa</strong>
+                <small>Encontre os pontos</small>
+            </div>
+
+            <div class="quick-card">
+                <span class="quick-icon">⭐</span>
+                <strong>Meus pontos</strong>
+                <small>Histórico e detalhes</small>
+            </div>
+
+            <div class="quick-card">
+                <span class="quick-icon">❓</span>
+                <strong>Dúvidas</strong>
+                <small>Saiba mais</small>
+            </div>
+        </div>
+    </section>
+
+    {# ---------- ÚLTIMAS COLETAS ---------- #}
+    {% if ultimas_coletas %}
+        <section class="section-block">
+            <h2 class="section-title">Últimas coletas</h2>
+
+            <div class="recent-list">
+                {% for registro in ultimas_coletas %}
+                    <div class="recent-item">
+                        <span class="recent-icon">{{ registro.residuo.icone|default:"♻️" }}</span>
+                        <div class="recent-info">
+                            <strong>{{ registro.quantidade }}x {{ registro.residuo.nome }}</strong>
+                            <small>{{ registro.ponto_coleta.nome }} · {{ registro.data|date:"d/m H:i" }}</small>
+                        </div>
+                        <span class="recent-points">+{{ registro.pontos }}</span>
+                    </div>
+                {% endfor %}
+            </div>
         </section>
+    {% endif %}
 
-
-        <section class="stats">
-
-            <div class="stat-card">
-
-                <span>⭐</span>
-
-                <h3>0</h3>
-
-                <p>Pontos</p>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span>🏆</span>
-
-                <h3>--</h3>
-
-                <p>Posição no ranking</p>
-
-            </div>
-
-        </section>
-
-
-        <section class="dashboard-options">
-
-            <div class="dashboard-card">
-
-                <span>📍</span>
-
-                <h3>Pontos de Coleta</h3>
-
-                <p>
-                    Encontre os pontos de coleta disponíveis no campus.
-                </p>
-
-                <button>
-                    Ver pontos
-                </button>
-
-            </div>
-
-
-            <div class="dashboard-card">
-
-                <span>♻️</span>
-
-                <h3>Registrar Reciclagem</h3>
-
-                <p>
-                    Registre uma nova reciclagem e ganhe pontos.
-                </p>
-
-                <button>
-                    Registrar
-                </button>
-
-            </div>
-
-
-            <div class="dashboard-card">
-
-                <span>🏆</span>
-
-                <h3>Ranking</h3>
-
-                <p>
-                    Veja os alunos que mais contribuem para a reciclagem.
-                </p>
-
-                <button>
-                    Ver ranking
-                </button>
-
-            </div>
-
-
-            <div class="dashboard-card">
-
-                <span>🎁</span>
-
-                <h3>Campanhas</h3>
-
-                <p>
-                    Confira as campanhas e os bônus disponíveis.
-                </p>
-
-                <button>
-                    Ver campanhas
-                </button>
-
-            </div>
-
-        </section>
-
-    </main>
+</main>
 
 </body>
 
