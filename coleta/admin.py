@@ -23,6 +23,11 @@ class PontoColetaAdmin(admin.ModelAdmin):
         (None, {
             "fields": ("nome", "localizacao", "descricao")
         }),
+        ("Coordenadas (opcional)", {
+            "fields": ("latitude", "longitude"),
+            "description": "Opcional. Preencha para o ponto aparecer no mapa. "
+                           "Ex.: -1.4389125 / -48.4782897"
+        }),
         ("QR Code", {
             "fields": ("codigo",),
             "description": "Este código é usado no QR Code do ponto. Não edite manualmente."

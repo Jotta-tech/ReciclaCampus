@@ -1,0 +1,87 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico - ReciclaCampus</title>
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="app-body">
+
+<header class="app-header">
+    <div class="app-header-brand">
+        <span class="brand-icon">♻️</span>
+        <span class="brand-name">ReciclaCampus</span>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn-ghost">← Voltar</a>
+</header>
+
+<main class="app-main">
+
+    <section class="greeting">
+        <h1>⭐ Meus pontos</h1>
+        <p>Histórico completo de reciclagem.</p>
+    </section>
+
+    {# ---------- RESUMO ---------- #}
+    <section class="mini-stats">
+        <div class="mini-stat">
+            <span>⭐</span>
+            <strong>{{ total_pontos }}</strong>
+            <small>Pontos totais</small>
+        </div>
+        <div class="mini-stat">
+            <span>♻️</span>
+            <strong>{{ total_itens }}</strong>
+            <small>Itens reciclados</small>
+        </div>
+        <div class="mini-stat">
+            <span>📋</span>
+            <strong>{{ total_registros }}</strong>
+            <small>Registros</small>
+        </div>
+    </section>
+
+    {# ---------- LISTA DE REGISTROS ---------- #}
+    {% if registros %}
+        <section class="section-block">
+            <h2 class="section-title">Todos os descartes</h2>
+
+            <div class="historico-lista">
+                {% for registro in registros %}
+                    <div class="historico-item">
+                        <span class="historico-icon">{{ registro.residuo.icone|default:"♻️" }}</span>
+                        <div class="historico-info">
+                            <strong>{{ registro.quantidade }}x {{ registro.residuo.nome }}</strong>
+                            <small>
+                                {{ registro.ponto_coleta.nome }}
+                                · {{ registro.data|date:"d/m/Y H:i" }}
+                            </small>
+                        </div>
+                        <span class="historico-pontos">+{{ registro.pontos }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% else %}
+        <section class="section-block">
+            <div class="ranking-vazio">
+                <p>Você ainda não reciclou nada. ♻️</p>
+                <p style="margin-top: 8px;">
+                    <a href="{% url 'dashboard' %}" class="btn-ghost" style="display:inline-block; margin-top: 10px;">
+                        Voltar ao dashboard
+                    </a>
+                </p>
+            </div>
+        </section>
+    {% endif %}
+
+</main>
+
+</body>
+</html>

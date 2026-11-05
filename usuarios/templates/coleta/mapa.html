@@ -1,0 +1,121 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa - ReciclaCampus</title>
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    {# Leaflet CSS via CDN alternativo #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+</head>
+
+<body class="app-body">
+
+<header class="app-header">
+    <div class="app-header-brand">
+        <span class="brand-icon">♻️</span>
+        <span class="brand-name">ReciclaCampus</span>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn-ghost">← Voltar</a>
+</header>
+
+<main class="app-main">
+
+    <section class="greeting">
+        <h1>📍 Mapa de pontos</h1>
+        <p>Clique em um pino para ver os detalhes e reciclar.</p>
+    </section>
+
+    {# Mapa com tamanho forçado direto no HTML #}
+    <div id="mapa" style="height: 500px; width: 100%; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); z-index: 1;"></div>
+
+    {# Aviso de pontos sem localização #}
+    <div id="pontos-sem-local" class="mapa-aviso" style="display: none;"></div>
+
+</main>
+
+{{ pontos_json|json_script:"dados-pontos" }}
+
+{# Leaflet JS via CDN alternativo #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+<script>
+(function () {
+    "use strict";
+
+    const dadosDoDjango = document.getElementById("dados-pontos").textContent;
+    const pontos = JSON.parse(dadosDoDjango);
+
+    const CENTRO_UNAMA = [-1.4388, -48.4784];
+    const ZOOM_INICIAL = 17;
+
+    const mapa = L.map("mapa").setView(CENTRO_UNAMA, ZOOM_INICIAL);
+
+       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        referrerPolicy: 'strict-origin-when-cross-origin' // <--- A CORREÇÃO AQUI
+    }).addTo(mapa);
+
+    const iconeVerde = L.divIcon({
+        className: "pino-verde",
+        html: '<div class="pino-verde-inner">♻️</div>',
+        iconSize: [36, 36],
+        iconAnchor: [18, 36],
+        popupAnchor: [0, -36]
+    });
+
+    const semLocalizacao = [];
+    const marcadores = [];
+
+    pontos.forEach(function (p) {
+        if (p.latitude == null || p.longitude == null) {
+            semLocalizacao.push(p);
+            return;
+        }
+
+        const marcador = L.marker([p.latitude, p.longitude], { icon: iconeVerde }).addTo(mapa);
+
+        const descricao = p.descricao ? '<p class="mapa-popup-desc">' + p.descricao + '</p>' : '';
+
+                        const popupHtml =
+            '<div class="mapa-popup">' +
+                '<strong>' + p.nome + '</strong>' +
+                descricao +
+                '<p class="mapa-popup-dica" style="margin-top: 10px; font-size: 12px; color: #166534; font-weight: 600;">📷 Vá até o local e escaneie o QR Code da lixeira para pontuar.</p>' +
+            '</div>';
+
+        marcador.bindPopup(popupHtml);
+        marcadores.push(marcador);
+    });
+
+    if (marcadores.length > 0) {
+        const grupo = L.featureGroup(marcadores);
+        mapa.fitBounds(grupo.getBounds().pad(0.2));
+    }
+
+    if (semLocalizacao.length > 0) {
+        const avisoEl = document.getElementById("pontos-sem-local");
+        avisoEl.style.display = "block";
+        avisoEl.innerHTML =
+            "<p><strong>Atenção:</strong> " + semLocalizacao.length +
+            " ponto(s) de coleta ainda não têm coordenadas cadastradas " +
+            "e não aparecem no mapa:</p>" +
+            "<ul>" +
+            semLocalizacao.map(function (p) {
+                return "<li>" + p.nome + " — <em>" + p.localizacao + "</em></li>";
+            }).join("") +
+            "</ul>" +
+            '<p class="mapa-aviso-dica">Peça ao administrador para preencher ' +
+            "latitude e longitude no painel admin.</p>";
+    }
+})();
+</script>
+
+</body>
+</html>

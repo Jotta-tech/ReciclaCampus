@@ -52,13 +52,13 @@
     </section>
 
     {# ---------- BOTÃO ESCANEAR QR ---------- #}
-    <a href="#" class="scan-button" onclick="alert('Em breve: leitura de QR Code pela câmera. Por enquanto, acesse pelo link do ponto.'); return false;">
-        <span class="scan-icon">📷</span>
-        <span class="scan-text">
-            <strong>Escanear QR Code</strong>
-            <small>Descarte e ganhe pontos</small>
-        </span>
-    </a>
+    <a href="{% url 'coleta:escanear' %}" class="scan-button">
+    <span class="scan-icon">📷</span>
+    <span class="scan-text">
+        <strong>Escanear QR Code</strong>
+        <small>Descarte e ganhe pontos</small>
+    </span>
+</a>
 
     {# ---------- CARD DE NÍVEL ---------- #}
     <section class="level-card">
@@ -106,29 +106,29 @@
     <section class="section-block">
         <h2 class="section-title">Acesso rápido</h2>
 
-        <div class="quick-grid">
-            <div class="quick-card">
+               <div class="quick-grid">
+            <a href="{% url 'coleta:ranking' %}" class="quick-card">
                 <span class="quick-icon">🏆</span>
                 <strong>Ranking</strong>
                 <small>Veja sua posição</small>
-            </div>
+            </a>
 
-            <div class="quick-card">
+                        <a href="{% url 'coleta:mapa' %}" class="quick-card">
                 <span class="quick-icon">📍</span>
                 <strong>Mapa</strong>
                 <small>Encontre os pontos</small>
-            </div>
+            </a>
 
-            <div class="quick-card">
+            <a href="{% url 'coleta:historico' %}" class="quick-card">
                 <span class="quick-icon">⭐</span>
                 <strong>Meus pontos</strong>
                 <small>Histórico e detalhes</small>
-            </div>
+            </a>
 
-            <div class="quick-card">
+            <div class="quick-card quick-card-desativado">
                 <span class="quick-icon">❓</span>
                 <strong>Dúvidas</strong>
-                <small>Saiba mais</small>
+                <small>Em breve</small>
             </div>
         </div>
     </section>

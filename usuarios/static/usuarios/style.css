@@ -656,3 +656,393 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background: var(--verde-destaque);
 }
+
+/* ============================================================
+   CADASTRO — mensagens de erro e ajuda
+   ============================================================ */
+.alert-error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border-left: 4px solid #DC2626;
+    padding: 14px 16px;
+    border-radius: var(--raio-sm);
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.field-error {
+    display: block;
+    margin-top: 6px;
+    color: #991B1B;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.field-help {
+    display: block;
+    margin-top: 6px;
+    color: var(--cinza-texto);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.field-help ul {
+    margin: 6px 0 0 18px;
+    padding: 0;
+}
+
+.field-help li {
+    margin-bottom: 2px;
+}
+
+/* Ajuste do formulário de cadastro (mais campos = espaçamento menor) */
+.login-box form .form-group {
+    margin-bottom: 16px;
+}
+
+.login-box form button[type="submit"] {
+    margin-top: 8px;
+}
+
+/* ============================================================
+   RANKING
+   ============================================================ */
+.ranking-minha-posicao {
+    background: linear-gradient(135deg, var(--verde-primaria), var(--verde-destaque));
+    color: white;
+    padding: 20px 24px;
+    border-radius: var(--raio);
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--sombra-media);
+}
+
+.ranking-minha-posicao-label {
+    font-size: 15px;
+    opacity: 0.95;
+}
+
+.ranking-minha-posicao-valor {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.ranking-minha-posicao-vazia {
+    display: block;
+    background: var(--branco);
+    color: var(--cinza-texto);
+    text-align: center;
+    box-shadow: var(--sombra-suave);
+}
+
+.ranking-minha-posicao-vazia a {
+    color: var(--verde-primaria);
+    font-weight: 600;
+}
+
+/* Pódio */
+.podio {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    align-items: end;
+}
+
+.podio-item {
+    background: var(--branco);
+    border-radius: var(--raio);
+    padding: 18px 12px;
+    text-align: center;
+    box-shadow: var(--sombra-suave);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.podio-1 {
+    background: linear-gradient(160deg, #FFFBEB, #FEF3C7);
+    border: 2px solid var(--amarelo);
+    padding-top: 26px;
+    padding-bottom: 26px;
+}
+
+.podio-posicao {
+    font-size: 34px;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.podio-nome {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #1F2937;
+}
+
+.podio-curso {
+    font-size: 12px;
+    color: var(--cinza-texto);
+}
+
+.podio-pontos {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--verde-primaria);
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+/* Lista geral */
+.ranking-lista {
+    background: var(--branco);
+    border-radius: var(--raio-sm);
+    box-shadow: var(--sombra-suave);
+    overflow: hidden;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cinza-borda);
+}
+
+.ranking-item:last-child {
+    border-bottom: none;
+}
+
+.ranking-posicao {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--cinza-texto);
+    min-width: 42px;
+    font-size: 15px;
+}
+
+.ranking-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.ranking-info strong {
+    font-size: 14px;
+}
+
+.ranking-info small {
+    font-size: 12px;
+    color: var(--cinza-texto);
+}
+
+.ranking-pontos {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--verde-destaque);
+    font-size: 15px;
+}
+
+.ranking-vazio {
+    background: var(--branco);
+    border-radius: var(--raio-sm);
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--cinza-texto);
+    box-shadow: var(--sombra-suave);
+}
+
+/* Responsivo */
+@media (max-width: 700px) {
+    .podio {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .podio-1 {
+        order: -1;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+}
+
+/* Card de acesso rápido desativado (em breve) */
+.quick-card-desativado {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.quick-card-desativado:hover {
+    transform: none;
+    box-shadow: var(--sombra-suave);
+}
+
+/* ============================================================
+   HISTÓRICO
+   ============================================================ */
+.historico-lista {
+    background: var(--branco);
+    border-radius: var(--raio-sm);
+    box-shadow: var(--sombra-suave);
+    overflow: hidden;
+}
+
+.historico-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cinza-borda);
+}
+
+.historico-item:last-child {
+    border-bottom: none;
+}
+
+.historico-icon {
+    font-size: 24px;
+    min-width: 32px;
+    text-align: center;
+}
+
+.historico-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.historico-info strong {
+    font-size: 14px;
+}
+
+.historico-info small {
+    font-size: 12px;
+    color: var(--cinza-texto);
+}
+
+.historico-pontos {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--verde-destaque);
+    font-size: 15px;
+}
+
+/* ============================================================
+   ESCANEAR QR CODE
+   ============================================================ */
+.qr-reader {
+    background: #000;
+    border-radius: var(--raio);
+    overflow: hidden;
+    min-height: 280px;
+    max-width: 500px;
+    margin: 0 auto 20px;
+    box-shadow: var(--sombra-media);
+}
+
+.qr-reader video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.qr-status {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    border-radius: var(--raio-sm);
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--branco);
+    color: var(--cinza-texto);
+    box-shadow: var(--sombra-suave);
+}
+
+.qr-status-info {
+    background: var(--branco);
+    color: var(--cinza-texto);
+}
+
+.qr-status-sucesso {
+    background: var(--verde-claro);
+    color: var(--verde-primaria);
+    border-left: 4px solid var(--verde-destaque);
+}
+
+.qr-status-erro {
+    background: #FEE2E2;
+    color: #991B1B;
+    border-left: 4px solid #DC2626;
+}
+
+/* ============================================================
+   MAPA
+   ============================================================ */
+.mapa-container {
+    height: 500px;
+    min-height: 500px;
+    width: 100%;
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-media);
+    margin-bottom: 20px;
+    z-index: 1;
+}
+
+/* Pino verde customizado */
+.pino-verde {
+    background: transparent;
+    border: none;
+}
+
+.pino-verde-inner {
+    width: 36px;
+    height: 36px;
+    background: var(--verde-primaria);
+    border: 3px solid var(--branco);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Ajustes de botões e links na Home */
+.hero-button {
+    display: inline-block;
+    background: var(--verde-primaria);
+    color: white;
+    padding: 16px 32px;
+    border-radius: var(--raio);
+    font-size: 17px;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: none;
+}
+
+.hero-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-media);
+    color: white;
+}
+
+/* Faz os cards se comportarem como links clicáveis */
+.card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-media);
+    border-color: var(--verde-destaque);
+}

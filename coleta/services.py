@@ -129,45 +129,32 @@ def ranking(limite=None, apenas_mes_atual=False, curso=None):
     """
     Retorna lista de usuários ordenada por pontos, no formato:
     [{"usuario": <Usuario>, "pontos": 1250}, ...]
-
-    Parâmetros:
-    - limite: quantos retornar (None = todos)
-    - apenas_mes_atual: se True, considera só registros do mês atual
-    - curso: se passado, filtra por curso
     """
     from usuarios.models import Usuario
 
-    filtros = {"confirmado": True}
+    # Condição base: só registros confirmados
+    filtro_pontos = Q(registros_reciclagem__confirmado=True)
 
+    # Se for apenas do mês atual, adiciona filtro de data
     if apenas_mes_atual:
         hoje = timezone.localdate()
-        filtros["data__year"] = hoje.year
-        filtros["data__month"] = hoje.month
+        filtro_pontos &= Q(
+            registros_reciclagem__data__year=hoje.year,
+            registros_reciclagem__data__month=hoje.month
+        )
 
+    # Monta a query única
     qs = (
         Usuario.objects
-        .filter(registros_reciclagem__confirmado=True)
-        .annotate(pontos_total=Sum("registros_reciclagem__pontos"))
+        .annotate(
+            pontos_total=Sum(
+                "registros_reciclagem__pontos",
+                filter=filtro_pontos
+            )
+        )
+        .filter(pontos_total__gt=0)
         .order_by("-pontos_total")
     )
-
-    if apenas_mes_atual:
-        # Anotação condicional para o mês
-        qs = (
-            Usuario.objects
-            .annotate(
-                pontos_total=Sum(
-                    "registros_reciclagem__pontos",
-                    filter=Q(
-                        registros_reciclagem__confirmado=True,
-                        registros_reciclagem__data__year=hoje.year,
-                        registros_reciclagem__data__month=hoje.month,
-                    ),
-                )
-            )
-            .filter(pontos_total__gt=0)
-            .order_by("-pontos_total")
-        )
 
     if curso:
         qs = qs.filter(curso=curso)
@@ -176,7 +163,6 @@ def ranking(limite=None, apenas_mes_atual=False, curso=None):
         qs = qs[:limite]
 
     return [{"usuario": u, "pontos": u.pontos_total or 0} for u in qs]
-
 
 def posicao_usuario(usuario):
     """
@@ -212,4 +198,16 @@ def ultimas_coletas(usuario, limite=3):
         .filter(usuario=usuario, confirmado=True)
         .select_related("residuo", "ponto_coleta")
         .order_by("-data")[:limite]
+    )
+
+def historico_usuario(usuario):
+    """
+    Retorna todos os registros confirmados do usuário, do mais recente
+    para o mais antigo, com os dados relacionados já carregados.
+    """
+    return (
+        RegistroReciclagem.objects
+        .filter(usuario=usuario, confirmado=True)
+        .select_related("residuo", "ponto_coleta")
+        .order_by("-data")
     )

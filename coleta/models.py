@@ -40,12 +40,22 @@ class PontoColeta(models.Model):
         help_text="Ex.: Bloco B, próximo à cantina."
     )
     descricao = models.TextField(blank=True)
+    latitude = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="Latitude (ex.: -1.4389125). Deixe em branco se não souber."
+    )
+    longitude = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="Longitude (ex.: -48.4782897). Deixe em branco se não souber."
+    )
     codigo = models.UUIDField(
-    default=uuid.uuid4,
-    editable=False,
-    db_index=True,
-    help_text="Código único usado no QR Code."
-)
+        default=uuid.uuid4,
+        editable=False,
+        db_index=True,
+        help_text="Código único usado no QR Code."
+    )
     ativo = models.BooleanField(default=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
@@ -56,7 +66,6 @@ class PontoColeta(models.Model):
 
     def __str__(self):
         return f"{self.nome} — {self.localizacao}"
-
 
 class RegistroReciclagem(models.Model):
     """Registro de um descarte feito por um estudante em um ponto."""
@@ -94,6 +103,22 @@ class RegistroReciclagem(models.Model):
         indexes = [
             models.Index(fields=["usuario", "-data"]),
         ]
+
+    def save(self, *args, **kwargs):
+        from django.conf import settings
+        
+        # Se o registro for novo (ainda não tem ID), define se nasce confirmado ou não
+        if not self.pk:
+            self.confirmado = getattr(settings, 'RECICLAGEM_AUTO_CONFIRMAR', True)
+
+        # Calcula os pontos automaticamente antes de salvar
+        if self.residuo_id and self.quantidade:
+            self.pontos = self.residuo.pontos * self.quantidade
+                
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.usuario} — {self.quantidade}x {self.residuo.nome} ({self.pontos} pts)"
 
     def save(self, *args, **kwargs):
         # Calcula os pontos automaticamente antes de salvar

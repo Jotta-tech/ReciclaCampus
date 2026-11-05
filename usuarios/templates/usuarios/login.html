@@ -32,8 +32,9 @@
                 </p>
             {% endif %}
 
-            <form method="POST">
+                       <form method="POST">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
 
                 <div class="form-group">
                     <label for="matricula">Matrícula</label>
@@ -65,7 +66,7 @@
 
             <p class="cadastro-text">
                 Ainda não possui uma conta?
-                <a href="#">Cadastre-se</a>
+                                <a href="{% url 'cadastro' %}">Cadastre-se</a>
             </p>
 
         </div>

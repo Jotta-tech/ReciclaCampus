@@ -1,0 +1,164 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escanear QR Code - ReciclaCampus</title>
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    {# Biblioteca html5-qrcode #}
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+
+<body class="app-body">
+
+<header class="app-header">
+    <div class="app-header-brand">
+        <span class="brand-icon">♻️</span>
+        <span class="brand-name">ReciclaCampus</span>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn-ghost">← Voltar</a>
+</header>
+
+<main class="app-main">
+
+    <section class="greeting">
+        <h1>📷 Escanear QR Code</h1>
+        <p>Aponte a câmera para o QR Code do ponto de coleta.</p>
+    </section>
+
+    {# Área da câmera #}
+    <div id="qr-reader" class="qr-reader"></div>
+
+    {# Mensagens de status #}
+    <div id="qr-status" class="qr-status">
+        <p>Iniciando câmera…</p>
+    </div>
+
+    {# Botão de fallback (caso a câmera não funcione) #}
+    <section class="section-block" style="margin-top: 24px;">
+        <p style="text-align: center; color: var(--cinza-texto); font-size: 14px;">
+            A câmera não está funcionando?
+            <a href="{% url 'dashboard' %}" style="color: var(--verde-primaria); font-weight: 600;">
+                Use o link do ponto de coleta.
+            </a>
+        </p>
+    </section>
+
+</main>
+
+{# Lógica de leitura do QR Code #}
+<script>
+(function () {
+    "use strict";
+
+    const statusEl = document.getElementById("qr-status");
+    const readerEl = document.getElementById("qr-reader");
+
+    // Regex para extrair o UUID de uma URL do tipo:
+    // http://host/coleta/ponto/<uuid>/
+    // Aceita também só o UUID puro (se o QR for só o código).
+    const UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+
+    let jaRedirecionou = false;
+
+    function mostrarStatus(mensagem, tipo) {
+        statusEl.innerHTML = "<p>" + mensagem + "</p>";
+        statusEl.className = "qr-status qr-status-" + (tipo || "info");
+    }
+
+    function extrairUuid(texto) {
+        const match = texto.match(UUID_REGEX);
+        return match ? match[0] : null;
+    }
+
+    function onScanSuccess(decodedText) {
+        if (jaRedirecionou) return;
+
+        const uuid = extrairUuid(decodedText);
+
+        if (!uuid) {
+            mostrarStatus(
+                "QR Code lido, mas não parece ser de um ponto de coleta. Tente novamente.",
+                "erro"
+            );
+            return;
+        }
+
+        jaRedirecionou = true;
+        mostrarStatus("QR Code lido! Redirecionando…", "sucesso");
+
+        // Pequeno delay para o usuário ver a mensagem
+        setTimeout(function () {
+            window.location.href = "/coleta/ponto/" + uuid + "/";
+        }, 400);
+    }
+
+    function onScanError(errorMessage) {
+        // Erros de leitura são normais (câmera procurando QR).
+        // Não mostramos nada para não poluir a tela.
+        console.debug("Scan error:", errorMessage);
+    }
+
+    function iniciarScanner() {
+        const html5Qrcode = new Html5Qrcode("qr-reader");
+
+        Html5Qrcode.getCameras()
+            .then(function (cameras) {
+                if (!cameras || cameras.length === 0) {
+                    mostrarStatus(
+                        "Nenhuma câmera encontrada. Use o link do ponto de coleta.",
+                        "erro"
+                    );
+                    return;
+                }
+
+                // Prefere a câmera traseira (environment) no celular
+                let cameraId = cameras[0].id;
+                for (const cam of cameras) {
+                    if (cam.label && cam.label.toLowerCase().includes("back")) {
+                        cameraId = cam.id;
+                        break;
+                    }
+                }
+
+                html5Qrcode.start(
+                    cameraId,
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                    },
+                    onScanSuccess,
+                    onScanError
+                )
+                .then(function () {
+                    mostrarStatus("Câmera ativa. Aponte para o QR Code.", "info");
+                })
+                .catch(function (err) {
+                    mostrarStatus(
+                        "Não foi possível iniciar a câmera: " + err + ". " +
+                        "Verifique as permissões do navegador.",
+                        "erro"
+                    );
+                });
+            })
+            .catch(function (err) {
+                mostrarStatus(
+                    "Não foi possível acessar a câmera: " + err + ". " +
+                    "Em celular, é necessário HTTPS. Use o link do ponto.",
+                    "erro"
+                );
+            });
+    }
+
+    // Inicia quando a página carregar
+    window.addEventListener("DOMContentLoaded", iniciarScanner);
+})();
+</script>
+
+</body>
+</html>

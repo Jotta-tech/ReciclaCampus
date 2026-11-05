@@ -20,7 +20,7 @@
 </a>
     </header>
 
-    <main>
+       <main>
         <section class="hero">
             <h2>Recicle e faça a diferença.</h2>
 
@@ -29,28 +29,30 @@
                 um campus mais sustentável.
             </p>
 
-            <button>Começar a reciclar</button>
+            <a href="{% url 'login' %}" class="hero-button">
+                Começar a reciclar
+            </a>
         </section>
 
         <section class="cards">
 
-            <div class="card">
+            <a href="{% url 'login' %}" class="card">
                 📍
                 <h3>Pontos de Coleta</h3>
                 <p>Encontre onde reciclar no campus.</p>
-            </div>
+            </a>
 
-            <div class="card">
+            <a href="{% url 'login' %}" class="card">
                 🏆
                 <h3>Ranking</h3>
                 <p>Veja os alunos que mais reciclaram.</p>
-            </div>
+            </a>
 
-            <div class="card">
+            <a href="{% url 'login' %}" class="card" onclick="alert('Em breve: campanhas com pontos em dobro!'); return false;">
                 🎁
                 <h3>Campanhas</h3>
                 <p>Participe e ganhe pontos extras.</p>
-            </div>
+            </a>
 
         </section>
     </main>

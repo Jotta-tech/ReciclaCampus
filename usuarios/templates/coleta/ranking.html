@@ -1,0 +1,96 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking - ReciclaCampus</title>
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="app-body">
+
+<header class="app-header">
+    <div class="app-header-brand">
+        <span class="brand-icon">♻️</span>
+        <span class="brand-name">ReciclaCampus</span>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn-ghost">← Voltar</a>
+</header>
+
+<main class="app-main">
+
+    <section class="greeting">
+        <h1>🏆 Ranking</h1>
+        <p>Veja quem mais reciclou no campus.</p>
+    </section>
+
+    {# ---------- SUA POSIÇÃO ---------- #}
+    {% if posicao %}
+        <section class="ranking-minha-posicao">
+            <span class="ranking-minha-posicao-label">Sua posição</span>
+            <strong class="ranking-minha-posicao-valor">{{ posicao }}º</strong>
+        </section>
+    {% else %}
+        <section class="ranking-minha-posicao ranking-minha-posicao-vazia">
+            <span>Você ainda não reciclou nada. <a href="{% url 'dashboard' %}">Comece agora!</a></span>
+        </section>
+    {% endif %}
+
+    {# ---------- PÓDIO (TOP 3) ---------- #}
+    {% if podio %}
+        <section class="section-block">
+            <h2 class="section-title">Top 3</h2>
+
+            <div class="podio">
+                {% for item in podio %}
+                    <div class="podio-item podio-{{ forloop.counter }}">
+                        <div class="podio-posicao">
+                            {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% else %}🥉{% endif %}
+                        </div>
+                        <div class="podio-nome">
+                            {{ item.usuario.first_name|default:item.usuario.username }}
+                        </div>
+                        <div class="podio-curso">{{ item.usuario.curso }}</div>
+                        <div class="podio-pontos">{{ item.pontos }} pts</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {# ---------- RESTO DA LISTA ---------- #}
+    {% if resto %}
+        <section class="section-block">
+            <h2 class="section-title">Classificação geral</h2>
+
+            <div class="ranking-lista">
+                {% for item in resto %}
+                    <div class="ranking-item">
+                        <span class="ranking-posicao">{{ forloop.counter|add:3 }}º</span>
+                        <div class="ranking-info">
+                            <strong>{{ item.usuario.first_name|default:item.usuario.username }}</strong>
+                            <small>{{ item.usuario.curso }}</small>
+                        </div>
+                        <span class="ranking-pontos">{{ item.pontos }} pts</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if not podio and not resto %}
+        <section class="section-block">
+            <div class="ranking-vazio">
+                <p>Nenhum estudante reciclou ainda. Seja o primeiro! ♻️</p>
+            </div>
+        </section>
+    {% endif %}
+
+</main>
+
+</body>
+</html>
