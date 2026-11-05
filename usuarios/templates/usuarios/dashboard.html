@@ -1,160 +1,241 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início - ReciclaCampus</title>
+    <meta name="theme-color" content="#f4f8f5">
+    <title>Meu painel | ReciclaCampus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Estilos exclusivos do dashboard; não alteram o login ou outras páginas. -->
+    <link rel="stylesheet" href="{% static 'usuarios/dashboard.css' %}">
 </head>
+<body class="app-body dashboard-page">
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-<body class="app-body">
+    <div class="dashboard-layout">
+        <aside class="dashboard-sidebar" aria-label="Navegação principal">
+            <a class="sidebar-brand" href="#inicio" aria-label="ReciclaCampus, início">
+                <span class="sidebar-brand-mark" aria-hidden="true">♻</span>
+                <span>Recicla<span class="sidebar-brand-accent">Campus</span></span>
+            </a>
 
-<header class="app-header">
-    <div class="app-header-brand">
-        <span class="brand-icon">♻️</span>
-        <span class="brand-name">ReciclaCampus</span>
+            <div class="sidebar-navigation">
+                <p class="sidebar-caption">MENU PRINCIPAL</p>
+                <nav class="sidebar-nav" aria-label="Seções do painel">
+                    <a class="sidebar-link sidebar-link--active" href="#inicio" aria-current="page">
+                        <span class="sidebar-link-icon" aria-hidden="true">▦</span> Visão geral
+                    </a>
+                    <a class="sidebar-link" href="#meus-pontos">
+                        <span class="sidebar-link-icon" aria-hidden="true">✦</span> Meus pontos
+                    </a>
+                    <a class="sidebar-link" href="#estatisticas">
+                        <span class="sidebar-link-icon" aria-hidden="true">▤</span> Estatísticas
+                    </a>
+                    <a class="sidebar-link" href="#ultimas-coletas">
+                        <span class="sidebar-link-icon" aria-hidden="true">↺</span> Minhas coletas
+                    </a>
+                    <a class="sidebar-link" href="#como-descartar">
+                        <span class="sidebar-link-icon" aria-hidden="true">▣</span> Como descartar
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-impact">
+                    <span class="sidebar-impact-icon" aria-hidden="true">🌱</span>
+                    <strong>Pequenas ações, grandes mudanças.</strong>
+                    <p>Continue contribuindo para um campus mais sustentável.</p>
+                </div>
+                <p class="sidebar-footnote">ReciclaCampus · Meu painel</p>
+            </div>
+        </aside>
+
+        <div class="dashboard-content">
+            <header class="dashboard-topbar">
+                <a class="mobile-brand" href="#inicio" aria-label="ReciclaCampus, início">
+                    <span aria-hidden="true">♻</span> ReciclaCampus
+                </a>
+                <div class="topbar-breadcrumb" aria-hidden="true">
+                    <span>Painel do estudante</span><span class="breadcrumb-separator">/</span><strong>Visão geral</strong>
+                </div>
+                <div class="topbar-actions">
+                    <span class="topbar-community"><span class="status-dot" aria-hidden="true"></span> Comunidade verde</span>
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="dashboard-logout" type="submit">Sair <span aria-hidden="true">↗</span></button>
+                    </form>
+                </div>
+            </header>
+
+            <main class="dashboard-main" id="conteudo">
+                {% if messages %}
+                    <div class="dashboard-messages" aria-live="polite">
+                        {% for message in messages %}
+                            <div class="dashboard-alert{% if message.tags %} dashboard-alert--{{ message.tags }}{% endif %}">
+                                <span aria-hidden="true">●</span> {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <section class="welcome-section" id="inicio" aria-labelledby="welcome-heading">
+                    <div>
+                        <p class="eyebrow">SEU ESPAÇO DE IMPACTO</p>
+                        <h1 id="welcome-heading">Olá, {{ user.first_name|default:user.username }}! <span aria-hidden="true">👋</span></h1>
+                        <p class="welcome-description">Cada descarte consciente transforma o nosso campus. Confira sua evolução!</p>
+                    </div>
+                    <span class="welcome-chip"><span aria-hidden="true">🌿</span> Juntos por um campus melhor</span>
+                </section>
+
+                <section class="points-hero" id="meus-pontos" aria-labelledby="points-heading">
+                    <div class="hero-decor hero-decor--one" aria-hidden="true"></div>
+                    <div class="hero-decor hero-decor--two" aria-hidden="true"></div>
+                    <div class="hero-points">
+                        <div class="hero-kicker"><span class="hero-kicker-icon" aria-hidden="true">✦</span><h2 id="points-heading">Seu saldo de pontos</h2></div>
+                        <p class="hero-score">{{ total_pontos }} <span>pontos</span></p>
+                        <p class="hero-support">Seu compromisso com a sustentabilidade está fazendo a diferença.</p>
+                        <a href="#ultimas-coletas" class="hero-link">Ver minhas coletas <span aria-hidden="true">→</span></a>
+                    </div>
+                    <div class="hero-level" aria-label="Nível atual">
+                        <span class="hero-level-label">CONQUISTA ATUAL</span>
+                        <span class="hero-level-icon" aria-hidden="true">🏅</span>
+                        <strong>Nível {{ nivel.nivel }}</strong>
+                        <span class="hero-level-name">{{ nivel.nome }}</span>
+                    </div>
+                </section>
+
+                <section class="stat-grid" id="estatisticas" aria-label="Resumo das suas estatísticas">
+                    <article class="stat-tile">
+                        <div class="stat-tile-header"><span class="stat-tile-icon stat-tile-icon--green" aria-hidden="true">♻</span><span>Itens reciclados</span></div>
+                        <strong class="stat-tile-value">{{ total_itens }}</strong>
+                        <p>Itens destinados à coleta</p>
+                    </article>
+                    <article class="stat-tile">
+                        <div class="stat-tile-header"><span class="stat-tile-icon stat-tile-icon--yellow" aria-hidden="true">🏆</span><span>Posição no ranking</span></div>
+                        <strong class="stat-tile-value">{% if posicao %}{{ posicao }}º{% else %}—{% endif %}</strong>
+                        <p>Sua posição atual no campus</p>
+                    </article>
+                    <article class="stat-tile">
+                        <div class="stat-tile-header"><span class="stat-tile-icon stat-tile-icon--blue" aria-hidden="true">▤</span><span>Registros realizados</span></div>
+                        <strong class="stat-tile-value">{{ total_registros }}</strong>
+                        <p>Descartes registrados</p>
+                    </article>
+                </section>
+
+                <div class="dashboard-section-grid">
+                    <div class="dashboard-primary-column">
+                        <section class="dashboard-panel progress-panel" id="meu-progresso" aria-labelledby="progress-title">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="panel-eyebrow">SUA JORNADA</p>
+                                    <h2 id="progress-title">Progresso de nível</h2>
+                                </div>
+                                <span class="panel-heading-icon" aria-hidden="true">🎯</span>
+                            </div>
+                            <div class="progress-level-row">
+                                <div>
+                                    <span class="level-label">SEU NÍVEL ATUAL</span>
+                                    <strong>Nível {{ nivel.nivel }} — {{ nivel.nome }}</strong>
+                                </div>
+                                <span class="level-percent">{{ nivel.progresso }}%</span>
+                            </div>
+                            <div class="dashboard-progress-track" role="progressbar" aria-label="Progresso para o próximo nível" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ nivel.progresso|default:0 }}">
+                                <div class="dashboard-progress-fill" style="width: {{ nivel.progresso|default:0 }}%;"></div>
+                            </div>
+                            <div class="progress-footnote">
+                                {% if nivel.proximo_nome %}
+                                    <span>{{ total_pontos }} / {{ nivel.max_pontos }} pontos</span>
+                                    <span>Faltam <strong>{{ nivel.faltam }}</strong> para {{ nivel.proximo_nome }}</span>
+                                {% else %}
+                                    <span>Você alcançou o nível máximo! 🏆</span>
+                                {% endif %}
+                            </div>
+                        </section>
+
+                        <section class="dashboard-panel collections-panel" id="ultimas-coletas" aria-labelledby="collections-title">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="panel-eyebrow">SEU HISTÓRICO</p>
+                                    <h2 id="collections-title">Últimas coletas</h2>
+                                </div>
+                                <span class="panel-heading-icon" aria-hidden="true">↺</span>
+                            </div>
+                            {% if ultimas_coletas %}
+                                <ul class="collection-list">
+                                    {% for registro in ultimas_coletas %}
+                                        <li class="collection-item">
+                                            <span class="collection-material-icon" aria-hidden="true">{{ registro.residuo.icone|default:"♻️" }}</span>
+                                            <div class="collection-detail">
+                                                <strong>{{ registro.quantidade }}x {{ registro.residuo.nome }}</strong>
+                                                <span>{{ registro.ponto_coleta.nome }} · {{ registro.data|date:"d/m/Y H:i" }}</span>
+                                            </div>
+                                            <span class="collection-earned">+{{ registro.pontos }} <small>pts</small></span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <div class="empty-collections">
+                                    <span class="empty-icon" aria-hidden="true">♻</span>
+                                    <strong>Suas primeiras coletas aparecerão aqui</strong>
+                                    <p>Quando você registrar um descarte, poderá acompanhar seus pontos e seu impacto neste espaço.</p>
+                                </div>
+                            {% endif %}
+                        </section>
+                    </div>
+
+                    <div class="dashboard-secondary-column">
+                        <section class="qr-panel" id="como-descartar" aria-labelledby="qr-title">
+                            <div class="qr-illustration" aria-hidden="true">
+                                <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="7" y="7" width="20" height="20" rx="3" stroke="currentColor" stroke-width="5"/>
+                                    <rect x="45" y="7" width="20" height="20" rx="3" stroke="currentColor" stroke-width="5"/>
+                                    <rect x="7" y="45" width="20" height="20" rx="3" stroke="currentColor" stroke-width="5"/>
+                                    <rect x="14" y="14" width="6" height="6" fill="currentColor"/>
+                                    <rect x="52" y="14" width="6" height="6" fill="currentColor"/>
+                                    <rect x="14" y="52" width="6" height="6" fill="currentColor"/>
+                                    <path d="M37 8V20H34V30H42V35H34V43H43V52H36V65M48 36H57V43H65M52 52H65V65H50V60" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="qr-status">LEITOR INTEGRADO EM BREVE</span>
+                            <h2 id="qr-title">Transforme resíduos em pontos</h2>
+                            <p>Os pontos de coleta têm QR Codes que levam ao registro do descarte.</p>
+                            <div class="qr-steps">
+                                <div><span>01</span><p>Abra a câmera do celular.</p></div>
+                                <div><span>02</span><p>Leia o QR Code do ponto de coleta.</p></div>
+                                <div><span>03</span><p>Abra o link e registre seu resíduo.</p></div>
+                            </div>
+                            <p class="qr-note">A leitura diretamente pelo dashboard ainda não está disponível.</p>
+                        </section>
+
+                        <section class="dashboard-panel quick-panel" aria-labelledby="shortcuts-title">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="panel-eyebrow">ACESSO RÁPIDO</p>
+                                    <h2 id="shortcuts-title">Explorar meu painel</h2>
+                                </div>
+                            </div>
+                            <nav class="quick-links" aria-label="Atalhos do dashboard">
+                                <a href="#meus-pontos"><span class="quick-link-ico" aria-hidden="true">✦</span><span>Meus pontos</span><span aria-hidden="true">↗</span></a>
+                                <a href="#meu-progresso"><span class="quick-link-ico" aria-hidden="true">🎯</span><span>Meu progresso</span><span aria-hidden="true">↗</span></a>
+                                <a href="#ultimas-coletas"><span class="quick-link-ico" aria-hidden="true">↺</span><span>Últimas coletas</span><span aria-hidden="true">↗</span></a>
+                            </nav>
+                        </section>
+                    </div>
+                </div>
+                <footer class="dashboard-footer">Feito para quem transforma o campus, um descarte de cada vez. <span aria-hidden="true">♻</span></footer>
+            </main>
+        </div>
     </div>
 
-    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit" class="btn-ghost">Sair</button>
-    </form>
-</header>
-
-<main class="app-main">
-
-    {# ---------- MENSAGENS ---------- #}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    {# ---------- SAUDAÇÃO ---------- #}
-    <section class="greeting">
-        <h1>Olá, {{ user.first_name|default:user.username }}! 👋</h1>
-        <p>Vamos continuar fazendo a diferença no campus?</p>
-    </section>
-
-    {# ---------- CARD DE PONTOS ---------- #}
-    <section class="points-card">
-        <div class="points-card-header">
-            <span class="points-icon">⭐</span>
-            <span class="points-label">Seus pontos</span>
-        </div>
-        <div class="points-value">{{ total_pontos }}</div>
-    </section>
-
-    {# ---------- BOTÃO ESCANEAR QR ---------- #}
-    <a href="#" class="scan-button" onclick="alert('Em breve: leitura de QR Code pela câmera. Por enquanto, acesse pelo link do ponto.'); return false;">
-        <span class="scan-icon">📷</span>
-        <span class="scan-text">
-            <strong>Escanear QR Code</strong>
-            <small>Descarte e ganhe pontos</small>
-        </span>
-    </a>
-
-    {# ---------- CARD DE NÍVEL ---------- #}
-    <section class="level-card">
-        <div class="level-header">
-            <span class="level-icon">🛡️</span>
-            <div>
-                <strong>Nível {{ nivel.nivel }} — {{ nivel.nome }}</strong>
-            </div>
-        </div>
-
-        <div class="progress-bar">
-            <div class="progress-fill" style="width: {{ nivel.progresso }}%;"></div>
-        </div>
-
-        <div class="level-info">
-            {% if nivel.proximo_nome %}
-                <span>{{ total_pontos }} / {{ nivel.max_pontos }} pontos</span>
-                <span>Faltam {{ nivel.faltam }} para {{ nivel.proximo_nome }}</span>
-            {% else %}
-                <span>Você está no nível máximo! 🏆</span>
-            {% endif %}
-        </div>
-    </section>
-
-    {# ---------- ESTATÍSTICAS RÁPIDAS ---------- #}
-    <section class="mini-stats">
-        <div class="mini-stat">
-            <span>♻️</span>
-            <strong>{{ total_itens }}</strong>
-            <small>Itens reciclados</small>
-        </div>
-        <div class="mini-stat">
-            <span>🏆</span>
-            <strong>{% if posicao %}{{ posicao }}º{% else %}--{% endif %}</strong>
-            <small>Posição no ranking</small>
-        </div>
-        <div class="mini-stat">
-            <span>📋</span>
-            <strong>{{ total_registros }}</strong>
-            <small>Registros feitos</small>
-        </div>
-    </section>
-
-    {# ---------- ACESSO RÁPIDO ---------- #}
-    <section class="section-block">
-        <h2 class="section-title">Acesso rápido</h2>
-
-        <div class="quick-grid">
-            <div class="quick-card">
-                <span class="quick-icon">🏆</span>
-                <strong>Ranking</strong>
-                <small>Veja sua posição</small>
-            </div>
-
-            <div class="quick-card">
-                <span class="quick-icon">📍</span>
-                <strong>Mapa</strong>
-                <small>Encontre os pontos</small>
-            </div>
-
-            <div class="quick-card">
-                <span class="quick-icon">⭐</span>
-                <strong>Meus pontos</strong>
-                <small>Histórico e detalhes</small>
-            </div>
-
-            <div class="quick-card">
-                <span class="quick-icon">❓</span>
-                <strong>Dúvidas</strong>
-                <small>Saiba mais</small>
-            </div>
-        </div>
-    </section>
-
-    {# ---------- ÚLTIMAS COLETAS ---------- #}
-    {% if ultimas_coletas %}
-        <section class="section-block">
-            <h2 class="section-title">Últimas coletas</h2>
-
-            <div class="recent-list">
-                {% for registro in ultimas_coletas %}
-                    <div class="recent-item">
-                        <span class="recent-icon">{{ registro.residuo.icone|default:"♻️" }}</span>
-                        <div class="recent-info">
-                            <strong>{{ registro.quantidade }}x {{ registro.residuo.nome }}</strong>
-                            <small>{{ registro.ponto_coleta.nome }} · {{ registro.data|date:"d/m H:i" }}</small>
-                        </div>
-                        <span class="recent-points">+{{ registro.pontos }}</span>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
-    {% endif %}
-
-</main>
-
+    <nav class="dashboard-mobile-nav" aria-label="Navegação móvel">
+        <a href="#inicio"><span aria-hidden="true">▦</span>Início</a>
+        <a href="#meus-pontos"><span aria-hidden="true">✦</span>Pontos</a>
+        <a href="#ultimas-coletas"><span aria-hidden="true">↺</span>Coletas</a>
+        <a href="#como-descartar"><span aria-hidden="true">▣</span>QR Code</a>
+    </nav>
 </body>
-
 </html>
