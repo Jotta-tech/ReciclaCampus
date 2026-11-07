@@ -1046,3 +1046,78 @@ button[type="submit"]:hover {
     box-shadow: var(--sombra-media);
     border-color: var(--verde-destaque);
 }
+
+/* ==========================================
+   DASHBOARD — LAYOUT RESPONSIVO
+   ========================================== */
+
+.dashboard-page {
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* Cada seção começa ocupando a linha inteira */
+.dashboard-page > * {
+    grid-column: 1 / -1;
+}
+
+/* Espaçamento controlado pelo grid */
+.dashboard-page > .greeting,
+.dashboard-page > .points-card,
+.dashboard-page > .scan-button,
+.dashboard-page > .level-card,
+.dashboard-page > .mini-stats,
+.dashboard-page > .section-block {
+    margin-bottom: 0;
+}
+
+/* Cards principais */
+.dashboard-page > .points-card,
+.dashboard-page > .level-card {
+    grid-column: span 7;
+}
+
+/* Ações e estatísticas */
+.dashboard-page > .scan-button,
+.dashboard-page > .mini-stats {
+    grid-column: span 5;
+}
+
+.dashboard-page .mini-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Tablets e celulares */
+@media (max-width: 900px) {
+    .dashboard-page {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dashboard-page > .points-card,
+    .dashboard-page > .scan-button,
+    .dashboard-page > .level-card,
+    .dashboard-page > .mini-stats {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-page .mini-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dashboard-page .quick-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Celulares pequenos */
+@media (max-width: 480px) {
+    .dashboard-page .mini-stat {
+        padding: 12px 6px;
+    }
+
+    .dashboard-page .quick-grid {
+        grid-template-columns: 1fr;
+    }
+}
